@@ -58,7 +58,21 @@ First line of institution2 address\\
 %%%%%%%%% BODY TEXT
 \section{Introduction/Background/Motivation}
 
-(5 points) What did you try to do? What problem did you try to solve? Articulate your objectives using absolutely no jargon. 
+(5 points) What did you try to do? What problem did you try to solve? Articulate your objectives using absolutely no jargon.
+
+The primary objective of this project is to provide a model (with an optimal trade off between mAP and inference speed) that 
+detects a wide array of flying objects in real time with the latest state-of-the-art single shot detector YOLOV8. These results 
+can be used as reference for further research by remote digital airport towers to detect aerial 
+threats to a runway, UAV's and drones for aircraft detection/threat identification, or any surveillance system that can benefit from 
+real - time aerial object detection. While YOLOV8 is being regarded as the new state-of-the-art, an official paper has yet to be released. 
+This motivates our secondary objective, which is to explain the new architecture and functionaly that YOLOV8 has adapted.
+
+Real-time object detection remains challenging due to variance in object spatial sizes and aspect ratios, inference speed, and noise. 
+This is especially true for our use case, as flying objects can change location, scale, rotation, and trajectory very quickly. 
+This conveys the necessity for fast inference speed (which for the purpose of this project is >=60 fps on 1080p video feed). 
+Currently, single stage detectors are the de-facto architecture choice for fast inference speeds. This choice comes at the 
+expensive of exchanging the higher accuracy you would typically expect from a two-state detector for the speed from a single-stage detector.
+
 
 (5 points) How is it done today, and what are the limits of current practice?
 
