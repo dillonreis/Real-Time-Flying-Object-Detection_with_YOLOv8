@@ -6,6 +6,8 @@
 \usepackage{graphicx}
 \usepackage{amsmath}
 \usepackage{amssymb}
+\usepackage[table,xcdraw]{xcolor}
+\usepackage{subfig}
 
 % Include other packages here, before hyperref.
 
@@ -168,6 +170,112 @@ Please add a section on the delegation of work among team members at the end of 
 
 \newpage
 \newpage
+
+\section{Model Architecture}
+
+With the publication of “You Only Look Once: Unified, Real-Time Object Detection” in 2015, one of the most popular object detection algorithms, YOLOv1, was first described as having a “refreshingly simple” approach. At its inception, YOLOv1 could process images at 45 fps, while a variant, fast YOLO, could reach upwards of 155 fps. It also achieved high mAP compared to other object detection algorithms at the time. 
+
+The main idea of YOLO is to frame the problem of object detection as a one-pass regression problem, YOLOv1 comprises a single neural network, predicting bounding boxes and associated class probability in a single evaluation. The base model of YOLO works by first dividing the input image into an S x S grid where each grid cell (i,j) predicts B bounding boxes and a confidence score for each box. The final output will be a tensor of shape: S x S x (B x 5 + C), where C is the number of categories.
+
+
+\subsection{YOLOv1 Overview}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.4\textwidth]{YOLOv1 Architecture.png}
+    \caption{YOLOv1 Architecture}
+    \label{fig:my_label}
+\end{figure}
+
+
+YOLOv1 architecture consists of 24 convolutional layers followed by two fully connected layers. In the paper, the authors took the first 20 convolutional layers from the backbone of the network and, with the addition of an average pooling layer and a single fully connected layer, where it was pre-trained and validated on the ImageNet 2012 dataset. During inference, the final four layers and 2 FC layers are added to the network; all initialized randomly.
+
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.4\textwidth]{YOLOv1 Loss Function.png}
+    \caption{YOLOv1 Loss function}
+    \label{fig:my_label}
+\end{figure}
+
+YOLOv1 uses stochastic gradient descent as its optimizer; the Loss function is shown in Fig. 1. The Loss function comprises two parts, localization loss, and classification loss. The localization loss measures the error between the predicted bounding box coordinates and the ground-truth bounding box. The classification loss measures the error between the predicted class probabilities and the ground truth. The $\lambda_{coord}$ and $\lambda_{noobj}$ are regularization coefficients that regulate the magnitude of the different components, emphasizing object localization and deemphasizing grid cells without objects.  
+
+\subsection{YOLOv5 Overview}
+
+YOLOv5 is an object detection model that was first introduced in 2020 by Ultralytics, which builds on the success of previous YOLO models. YOLOv5 achieved SOTA performance on a variety of benchmark datasets while also being fast and efficient to train and deploy. YOLO made several architectural changes when YOLOv5 came around, most notably the standardized practice of structuring the model into three components, the backbone, the neck, and the head. 
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.4\textwidth]{YOLOv5 Architecture.png}
+    \caption{YOLOv5 Architecture}
+    \label{fig:my_label}
+\end{figure}
+
+The backbone of YOLOv5 is a variant of Darknet53, a new network for performing feature extraction characterized by small filter windows and residual connections. YOLOv5 modifies Darknet 53 by introducing Cross Stage Partial (CSP) connections to the network. This enables the architecture to achieve a richer gradient combination while reducing the amount of computation. It involves dividing the backbone into two streams, one processing the image and another which processes a downsampled version of the input. They are later concatenated and passed to the next stage of the network. 
+
+The neck of YOLOv5 is the Intermediate component that connects the backbone to the head. It aggregates and refines the features extracted by the backbone, often focusing on enhancing the spatial and semantic information across different scales. 
+
+The first half of the neck is composed of a Spatial Pyramid Pooling (SPP) layer to remove the fixed-size constraint of the network, which is typically a requirement due to the final fully connected layers during the inference phase. This removes the need to warp, augment, or crop images, which generally change the aspect ratio and scale of the object in the image. 
+
+The second half of the neck, the CSP-Path Aggregation Network (CSP-PAN), incorporates the features learned by the CSP blocks in the backbone and shortens the information path between lower layers and top features. PAN links the feature grid and all feature levels to make helpful information in each feature level propagate directly to subblocks. 
+
+YOLOv5’s head consists of three branches, each predicting a different feature scale. In the original publication, the authors used different grid cell shapes for each level, especially grid cell sizes of 13 x 13, 26 x 26, and 52 x 52, with each grid cell predicting B = 3 bounding boxes. Each head produces bounding boxes, class probabilities, and confidence scores, with the output tensor being of shape S x S x (B x 5 + C), where 5 represents x, y, w, h, and the confidence score of the predicted class. Finally, the network uses Non-maximum Suppression (NMS) to filter out overlapping bounding boxes and only keep the most confident predictions.
+
+YOLOv5 also incorporates anchor boxes, fixed-sized bounding boxes used to predict the location and size of objects within an image. Instead of predicting arbitrary bounding boxes for each object instance, the model predicts the coordinates of the anchor boxes with predefined aspect ratios and scales and adjusts them to fit the object instance.
+
+\subsection{YOLOv5 vs. YOLOv8}
+
+\section{Model Evaluation}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.45\textwidth]{YOLO Model Performance.png}
+    \caption{Shows the performance of each YOLO model and it's respective versions for mAP50 against number of parameters and inference speed}
+    \label{fig:my_label}
+\end{figure}
+
+Mean Average Precision (mAP) is a commonly used evaluation metric for object detection that combines Precision, recall, IOU, and AP. Precision is the ratio of true positives to the total number of detections. At the same time, recall is the ratio of true positives to the total number of ground truth objects in an image. Recall values range from 0.0 to 1.0 with a stepsize of 0.1. In contrast, the interpolated precision value is defined as the maximum Precision corresponding to the recall value more significant than the current recall value. The curve we obtain is commonly called the precision-recall curve. Average Precision is therefore defined as the area underneath this curve. A higher AP score indicates better performance since it means the model is accurately detecting more objects in an image while minimizing false positives. 
+
+It is essential to define what we consider a valid detection by our model. mAP50 uses IoU as its threshold parameter, defined as an area of overlap over an area of union between the predicted bounding box and ground truth, set at an IoU = 50\% or greater. Finally, we average the result APs over all the category classes to obtain mAP50. mAP50:95 corresponds to the average mAP across all categories for different IoU thresholds, starting from 50% to 95%, with a step size of 5\%. This provides a more comprehensive evaluation of the model’s performance across various confidence levels.
+
+% \par
+% \begin{table}[h]
+% \begin{center}
+% \scalebox{0.9}{
+% \begin{tabular}{|l|c|c|c|}
+% \hline
+% Model   & \multicolumn{1}{l|}{Parameters (M)} & \multicolumn{1}{l|}{Inference (ms)} & \multicolumn{1}{l|}{mAP50:95} \\ \hline
+% YOLOv8n & \cellcolor[HTML]{FFFFFF}3.2         & \cellcolor[HTML]{FFFFFF}0.99        & \cellcolor[HTML]{FFFFFF}37.3  \\ \hline
+% YOLOv8s & \cellcolor[HTML]{FFFFFF}11.2        & \cellcolor[HTML]{FFFFFF}1.20        & \cellcolor[HTML]{FFFFFF}44.9  \\ \hline
+% YOLOv8m & \cellcolor[HTML]{FFFFFF}25.9        & \cellcolor[HTML]{FFFFFF}1.83        & \cellcolor[HTML]{FFFFFF}50.2  \\ \hline
+% YOLOv8l & \cellcolor[HTML]{FFFFFF}43.7        & \cellcolor[HTML]{FFFFFF}2.39        & \cellcolor[HTML]{FFFFFF}52.9  \\ \hline
+% YOLOv8x & \cellcolor[HTML]{FFFFFF}68.2        & \cellcolor[HTML]{FFFFFF}3.53        & \cellcolor[HTML]{FFFFFF}53.9  \\ \hline
+% \end{tabular}
+% }
+% \end{center}
+% \caption{YOLOv8 models pre-trained on the COCO val2017 dataset. Inference speed is averaged over COCO class images using an Amazon EC2 P4d instance}
+% \end{table}
+
+\begin{figure}[h]
+    \centering
+    \subfloat[\centering Confusion matrix for the different classes]{{\includegraphics[width=3.2cm]{confusion_matrix.png}}}
+    \qquad
+    \subfloat[\centering PR curve showing for each individual class and overall]{{\includegraphics[width=3.5cm]{PR_curve.png} }}%
+    \caption{TBA}%
+    \label{fig:example}
+\end{figure}
+
+The model we performed our evaluation on was the YOLOv8m model, which was trained on the flying object detection dataset, saw a mAP@50 = 79.2\% and mAP@50:95 = 68.5\%. Performance was relatively stable across most classes according to the confusion matrix in Fig. 5. 
+
+\subsection{Low Intraclass Variance Discussion}
+
+Classes that are similar to each other in an object detection algorithm can pose a challenge for the model as it may struggle to distinguish between the two classes. For example, if the dataset we use contains many different families of planes which the model may have difficulty distinguishing between them. This problem is often called class confusion and can typically effect models object detection models.
+
+To combat this problem, one approach is to view a confusion matrix, which visualizes the number of predicted classes versus the ground truth label. Looking at our confusion matrix in Fig. 5, the model does surprisingly well for low intraclass variance categories, such as the "fighter" family. 
+
+We attempt to take the most visually striking
+
+
 \section{Miscellaneous Information}
 
 The rest of the information in this format template has been adapted from CVPR 2020 and provides guidelines on the lower-level specifications regarding the paper's format.
