@@ -26,16 +26,22 @@
 \begin{document}
 
 %%%%%%%%% TITLE
-\title{Real Time Flying Object Detection: CS 7643}
+\title{Project Report : CS 7643}
 
-\author{Dillion Reis*, Jordan Kupeck*, Jacqueline Hong*, Ahmad Daoudi*\\
-Georgia Institute of Technology\\
-{\tt\small {REDACTED}@gatech.edu}
+\author{First Author\\
+Institution1\\
+Institution1 address\\
+{\tt\small firstauthor@i1.org}
 % For a paper whose authors are all at the same institution,
 % omit the following lines up until the closing ``}''.
 % Additional authors and addresses can be added with ``\and'',
 % just like the second author.
 % To save space, use either the email address or home page, not both
+\and
+Second Author\\
+Institution2\\
+First line of institution2 address\\
+{\tt\small secondauthor@i2.org}
 }
 
 \maketitle
@@ -53,43 +59,35 @@ Georgia Institute of Technology\\
 
 %%%%%%%%% BODY TEXT
 \section{Introduction/Background/Motivation}
+
 It is no surprise that drones and mini-UAVs still remain an integral part of modern warfare. They present a stealth capability 
 and can avoid detection by radar due to their small electromagnetic signature. They are also small, highly maneuverable, and 
-omit low levels of noise. While methods such as utilizing radio and acoustic detection have been proposed as countermeasures, they 
+omit low levels of noise. While methods such utilizing radio and acoustic detection have been proposed as countermeasures, they 
 are currently known to be inaccurate. This motivates the integration of a visual detector in any such detection system.
 
 
-Use cases (WIP): flying regulation enforcement (ie. must be a min distance between other aircraft), wireless communication, drug delivery (reference prison use case), mapping areas (reference mapping the Mojave Desert with drones), suicide drones (reference recent Ukraine news)
+JACKIES STUFF
+ 
 
-The primary objective of this project is to provide a model that detects a wide array of flying objects in real-time with the latest 
-state-of-the-art single-shot detector YOLOv8. These results can be used as a reference for further research by remote digital airport 
+The primary objective of this project is to provide a model that detects a wide array of flying objects in real time with the latest 
+state-of-the-art single shot detector YOLOv8. These results can be used as reference for further research by remote digital airport 
 towers to detect aerial threats to a runway, surveillance systems for drone detection, and UAVs and for aircraft detection/threat identification. 
 While YOLOv8 is being regarded as the new state-of-the-art, an official paper has yet to be released. This motivates our secondary objective, 
-which is to explain the new architecture and functionality that YOLOv8 has adapted.
+which is to explain the new architecture and functionally that YOLOv8 has adapted.
 
+Currently, single stage detectors are the de-facto architecture choice for fast inference speeds. This choice comes at the expensive of exchanging 
+the higher accuracy you would typically expect from a two-state detector for the speed from a single-stage detector. Real-time object detection 
+remains challenging due to variance in object spatial sizes and aspect ratios, inference speed, and noise. This is especially true for our use 
+case, as flying objects can change location, scale, rotation, and trajectory very quickly. This conveys the necessity for fast inference speed 
+(which for the purpose of this project is between 30 - 60 fps on 1080p video feed). 
 
 (5 points) What did you try to do? What problem did you try to solve? Articulate your objectives using absolutely no jargon. 
 
-[Still add stuff to the various use case examples above later, but focusing on:]
-    
-We're going to be focusing on a recent event where people used drones to surveil U.S. Border Patrol agents in order to smuggle migrants. Subsequent investigation led the agents to find the footage that the smugglers recorded. They already have towers that use object detection for people and motor vehicles, but not drones (to the best of our knowledge) [SOURCE]. "With dense vegetation and vast tracts of isolated ranch land, the region attracts the human and drug smugglers to try their chances." This can be tied to the varying background challenge - how drones would blend in and can possibly not get detected. Basically, they say that the technology on their digital towers is state-of-the-art, but it seems to focus on finding illegal migrants only. 
-
-With drones becoming so accessible now, they need to be able to detect that too, but the landscape/background makes it a challenge. Other challenges are that the drones will be very small in the footage because people won't want to fly near the digital towers. This is how we tie in the size issue. Third, there is also the challenge of other flying objects coming into view. There will be birds and it's important to distinguish between a bird and a drone. We can also see how we do against the Drone-vs-Bird dataset. There will also be other aircraft flying across the border or within the field of view, so it's important for us to be able to distinguish those from drones too. Note that other flying object detection projects are very focused on UAVS, specifically Drone-vs-Bird. This is not a reflection of real-world conditions. Selecting these challenges leads to having a model that will perform better for real-world use cases. Unlike previously published models, tackling these challenges gives our model the variance needed for real-world applications.
-
-The overall problem is to be able to provide a model that detects a wide array of flying objects in real time with the latest state-of-the-art single-shot detector, YOLOv8. Our objectives relate to the challenges that come with our domain (which are also the common challenges of object detection on UAVs).
-
-
 (5 points) How is it done today, and what are the limits of current practice?
-
-Currently, single-stage detectors are the de-facto architecture choice for fast inference speeds. This choice comes at the expense of exchanging the higher accuracy you would typically expect from a two-state detector for the speed of a single-stage detector. Real-time object detection remains challenging due to variances in object spatial sizes and aspect ratios, inference speed, and noise. This is especially true for our use case, as flying objects can change location, scale, rotation, and trajectory very quickly. This conveys the necessity for fast inference speed (which for the purpose of this project is between 30 - 60 fps on 1080p video feed). 
 
 (5 points) Who cares? If you are successful, what difference will it make? 
 
-If we are successful, this will make a difference in the realm of object detection, where we will be able to provide more novel insight related to our challenges with our results and observations from our experiments trying to solve the landscape (variance/blending), size, and other flying objects challenges. In addition, this will positively affect the world of surveillance due to our focus on real-world conditions and use cases. Drones are capable of much danger and harm, and we can make the world a safer place. Surveillance technology needs to adapt quickly because drone use is increasing at an alarming rate.
-
 (5 points) What data did you use? Provide details about your data, specifically choose the most important aspects of your data mentioned \href{https://arxiv.org/abs/1803.09010}{here}. You don’t have to choose all of them, just the most relevant.
-
-Jackie: Didn't realize this section requires some extra reading (https://arxiv.org/pdf/1803.09010.pdf). Still reading and filling out this info based on the paper.
 %-------------------------------------------------------------------------
 %------------------------------------------------------------------------
 \section{Approach}
@@ -186,7 +184,7 @@ The main idea of YOLO is to frame the problem of object detection as a one-pass 
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=0.4\textwidth]{figures/YOLOv1 Architecture.png}
+    \includegraphics[width=0.4\textwidth]{YOLOv1 Architecture.png}
     \caption{YOLOv1 Architecture}
     \label{fig:my_label}
 \end{figure}
@@ -198,8 +196,8 @@ YOLOv1 architecture consists of 24 convolutional layers followed by two fully co
 \begin{figure}[h]
     \centering
     \includegraphics[width=0.4\textwidth]{figures/YOLO_Loss.png}
-    \caption{YOLOv1 Loss function [reference to paper]}
-    \label{fig:YOLO_Loss}
+    \caption{YOLOv1 Loss function}
+    \label{fig:my_label}
 \end{figure}
 
 YOLOv1 uses stochastic gradient descent as its optimizer; the Loss function is shown in Fig. 1. The Loss function comprises two parts, localization loss, and classification loss. The localization loss measures the error between the predicted bounding box coordinates and the ground-truth bounding box. The classification loss measures the error between the predicted class probabilities and the ground truth. The $\lambda_{coord}$ and $\lambda_{noobj}$ are regularization coefficients that regulate the magnitude of the different components, emphasizing object localization and deemphasizing grid cells without objects.  
@@ -240,21 +238,12 @@ The FPN works by gradually reducing the spatial resolution of the input image wh
 
 \subsection{YOLOv8 vs YOLOv5}
 Both YOLOv5 and YOLOv8 use mosaic augmentation on the training set. Mosaic augmentation is a data augmentation technique that takes four random images from the training set and combines them into a single mosaic image. This image, where each quadrant contains a random crop from one of the four input images, is then inputted into the model [https://blog.roboflow.com/advanced-augmentations/]\\
-One of the key differences between YOLOv8 and YOLOv5 is their neural network architectures. YOLOv8 uses a new architecture that combines both Feature Pyramid Network (FPN) and Path Aggregation Network (PAN) modules, while YOLOv5 uses a modified version of the CSPDarknet architecture. FPN is used to generate feature maps at multiple scales and resolutions, while PAN is used to aggregate features from different levels of the network to improve accuracy.\\
-Performance: YOLOv8 is generally considered to be more accurate than YOLOv5. In benchmark tests, YOLOv8 has achieved higher mean Average Precision (mAP) scores than YOLOv5 on several datasets, particularly for small objects and objects with complex shapes.\\
-Training data: YOLOv8 was trained on a larger and more diverse dataset than YOLOv5, which can lead to better performance on a wider range of images. YOLOv8 was trained on a combination of the COCO dataset and several other datasets, while YOLOv5 was trained primarily on the COCO dataset.\\
-Labeling tool: YOLOv8 includes a new labeling tool called RoboFlow Annotate that makes it easier to annotate images for training the model. The tool includes several features such as auto labeling, labeling shortcuts, and customizable hotkeys. In contrast, YOLOv5 uses a different labeling tool.\\
-Post-processing: YOLOv8 includes more advanced post-processing techniques than YOLOv5, which can help to filter out false positives and improve the accuracy of the final detections. For example, YOLOv8 uses a technique called Soft-NMS to filter out redundant bounding boxes, while YOLOv5 uses a simpler NMS algorithm.\\
-Object detection speed: YOLOv8 is slightly slower than YOLOv5 in terms of object detection speed. However, YOLOv8 is still able to process images in real-time on modern GPUs.\\
-Outpt heads: YOLOv5 has 3 output heads while YOLOv8 has 1 output head. YOLOv8 Does not have small, medium, and large anchor boxes rather it uses an anchor free detection mechanism that predicts directly the center of an object instead of the offset from a known anchor box which reduces the number of box predictions, and that speeds up Non-Maximum Suppression (NMS), which is a complicated post processing step that sifts through candidate detections after inference.\\
-Overall, YOLOv8 introduces several improvements over YOLOv5, particularly in terms of neural network architecture, performance, and post-processing techniques. These improvements have resulted in significantly higher accuracy and better performance for object detection, making YOLOv8 a popular choice for a wide range of computer vision applications.\\
-
 %---------------------------------------------------------------------
 \section{Model Evaluation}
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=0.45\textwidth]{figures/yolo-comparison-plots.png}
+    \includegraphics[width=0.45\textwidth]{YOLO Model Performance.png}
     \caption{Shows the performance of each YOLO model and it's respective versions for mAP50 against number of parameters and inference speed}
     \label{fig:my_label}
 \end{figure}
@@ -283,7 +272,7 @@ It is essential to define what we consider a valid detection by our model. mAP50
 
 \begin{figure}[h]
     \centering
-    \subfloat[\centering Confusion matrix for the different classes]{{\includegraphics[width=3.2cm]{figures/confusion_matrix.png}}}
+    \subfloat[\centering Confusion matrix for the different classes]{{\includegraphics[width=3.2cm]{confusion_matrix.png}}}
     \qquad
     \subfloat[\centering PR curve showing for each individual class and overall]{{\includegraphics[width=3.5cm]{PR_curve.png} }}%
     \caption{TBA}%
@@ -690,36 +679,6 @@ of the use of color in your document.
     \end{center}
     \caption{Hyperparameter tuning training and validation losses}
     \label{tab:Hyper_param_tune_1_1}
-\end{table*}
-
-\begin{table*}
-\begin{center}
-    \begin{tabular}{|l|ccccc|}
-        \hline
-         &    metrics/precision(B) & metrics/recall(B) & metrics/mAP50(B) & metrics/mAP50-95(B) & best E \\
-         \hline
-b16\textunderscore sgd\textunderscore cls1\textunderscore box5.5\textunderscore dfl2.5 & 0.40972 & 0.48415 & 0.46184 & 0.37037 & 0.43152 \\
-b16\textunderscore sgd\textunderscore cls1.5\textunderscore box5.5\textunderscore dfl3 & 0.45258 & 0.46796 & 0.46282 & 0.36839 & 0.4379375 \\
-b16\textunderscore sgd\textunderscore cls1\textunderscore box5.5\textunderscore dfl2 & 0.46028 & 0.43946 & 0.45409 & 0.36064 & 0.4286175 \\
-b16\textunderscore sgd\textunderscore cls1\textunderscore box6.5\textunderscore dfl2.5 & 0.40351 & 0.46852 & 0.4473 & 0.35919 & 0.41963 \\
-b16\textunderscore sgd\textunderscore cls1\textunderscore box6.5\textunderscore dfl2 & 0.41697 & 0.46845 & 0.44682 & 0.35434 & 0.421645 \\
-b16\textunderscore sgd\textunderscore cls1 & 0.48127 & 0.40463 & 0.44537 & 0.35278 & 0.4210125 \\
-b16\textunderscore sgd\textunderscore cls0.75 & 0.39927 & 0.4835 & 0.43771 & 0.34717 & 0.4169125 \\
-b16\textunderscore sgd\textunderscore cls1.5 & 0.42071 & 0.44545 & 0.43597 & 0.34489 & 0.411755 \\
-b16\textunderscore sgd\textunderscore cls1.5\textunderscore box5.5\textunderscore dfl2.5 & 0.42071 & 0.44545 & 0.43597 & 0.34489 & 0.411755 \\
-b16\textunderscore sgd\textunderscore cls0.5 & 0.40339 & 0.42866 & 0.40969 & 0.32647 & 0.3920525 \\
-b8\textunderscore sgd\textunderscore cls0.75 & 0.43408 & 0.39635 & 0.40152 & 0.31535 & 0.386825 \\
-b8\textunderscore sgd\textunderscore cls0.5 & 0.34753 & 0.42511 & 0.38264 & 0.29828 & 0.36339 \\
-b16\textunderscore adam\textunderscore cls0.75 & 0.22446 & 0.15647 & 0.13078 & 0.07966 & 0.1478425 \\
-b16\textunderscore adam\textunderscore cls0.5 & 0.31694 & 0.12957 & 0.12372 & 0.07692 & 0.1617875 \\
-b16\textunderscore RMSProp\textunderscore cls0.5 & 0.15001 & 0.02716 & 2.00E-05 & 1.00E-05 & 0.0443 \\
-b16\textunderscore RMSProp\textunderscore cls0.75 & 0 & 2.00E-05 & 0 & 0 & 0.000005 \\
-
-        \hline
-    \end{tabular}    
-    \end{center}
-    \caption{Hyperparameter tuning metrics}
-    \label{tab:Hyper_param_tune_1_2}
 \end{table*}
 
 \begin{table*}
