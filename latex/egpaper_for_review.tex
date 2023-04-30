@@ -62,32 +62,41 @@ First line of institution2 address\\
 
 It is no surprise that drones and mini-UAVs still remain an integral part of modern warfare. They present a stealth capability 
 and can avoid detection by radar due to their small electromagnetic signature. They are also small, highly maneuverable, and 
-omit low levels of noise. While methods such utilizing radio and acoustic detection have been proposed as countermeasures, they 
+omit low levels of noise. While methods such as utilizing radio and acoustic detection have been proposed as countermeasures, they 
 are currently known to be inaccurate. This motivates the integration of a visual detector in any such detection system.
 
 
-JACKIES STUFF
- 
+Use cases (WIP): flying regulation enforcement (ie. must be a min distance between other aircraft), wireless communication, drug delivery (reference prison use case), mapping areas (reference mapping the Mojave Desert with drones), suicide drones (reference recent Ukraine news)
 
-The primary objective of this project is to provide a model that detects a wide array of flying objects in real time with the latest 
-state-of-the-art single shot detector YOLOv8. These results can be used as reference for further research by remote digital airport 
+The primary objective of this project is to provide a model that detects a wide array of flying objects in real-time with the latest 
+state-of-the-art single-shot detector YOLOv8. These results can be used as a reference for further research by remote digital airport 
 towers to detect aerial threats to a runway, surveillance systems for drone detection, and UAVs and for aircraft detection/threat identification. 
 While YOLOv8 is being regarded as the new state-of-the-art, an official paper has yet to be released. This motivates our secondary objective, 
-which is to explain the new architecture and functionally that YOLOv8 has adapted.
+which is to explain the new architecture and functionality that YOLOv8 has adapted.
 
-Currently, single stage detectors are the de-facto architecture choice for fast inference speeds. This choice comes at the expensive of exchanging 
-the higher accuracy you would typically expect from a two-state detector for the speed from a single-stage detector. Real-time object detection 
-remains challenging due to variance in object spatial sizes and aspect ratios, inference speed, and noise. This is especially true for our use 
-case, as flying objects can change location, scale, rotation, and trajectory very quickly. This conveys the necessity for fast inference speed 
-(which for the purpose of this project is between 30 - 60 fps on 1080p video feed). 
 
 (5 points) What did you try to do? What problem did you try to solve? Articulate your objectives using absolutely no jargon. 
 
+[Still add stuff to the various use case examples above later, but focusing on:]
+    
+We're going to be focusing on a recent event where people used drones to surveil U.S. Border Patrol agents in order to smuggle migrants. Subsequent investigation led the agents to find the footage that the smugglers recorded. They already have towers that use object detection for people and motor vehicles, but not drones (to the best of our knowledge) [SOURCE]. "With dense vegetation and vast tracts of isolated ranch land, the region attracts the human and drug smugglers to try their chances." This can be tied to the varying background challenge - how drones would blend in and can possibly not get detected. Basically, they say that the technology on their digital towers is state-of-the-art, but it seems to focus on finding illegal migrants only. 
+
+With drones becoming so accessible now, they need to be able to detect that too, but the landscape/background makes it a challenge. Other challenges are that the drones will be very small in the footage because people won't want to fly near the digital towers. This is how we tie in the size issue. Third, there is also the challenge of other flying objects coming into view. There will be birds and it's important to distinguish between a bird and a drone. We can also see how we do against the Drone-vs-Bird dataset. There will also be other aircraft flying across the border or within the field of view, so it's important for us to be able to distinguish those from drones too. Note that other flying object detection projects are very focused on UAVS, specifically Drone-vs-Bird. This is not a reflection of real-world conditions. Selecting these challenges leads to having a model that will perform better for real-world use cases. Unlike previously published models, tackling these challenges gives our model the variance needed for real-world applications.
+
+The overall problem is to be able to provide a model that detects a wide array of flying objects in real time with the latest state-of-the-art single-shot detector, YOLOv8. Our objectives relate to the challenges that come with our domain (which are also the common challenges of object detection on UAVs).
+
+
 (5 points) How is it done today, and what are the limits of current practice?
+
+Currently, single-stage detectors are the de-facto architecture choice for fast inference speeds. This choice comes at the expense of exchanging the higher accuracy you would typically expect from a two-state detector for the speed of a single-stage detector. Real-time object detection remains challenging due to variances in object spatial sizes and aspect ratios, inference speed, and noise. This is especially true for our use case, as flying objects can change location, scale, rotation, and trajectory very quickly. This conveys the necessity for fast inference speed (which for the purpose of this project is between 30 - 60 fps on 1080p video feed). 
 
 (5 points) Who cares? If you are successful, what difference will it make? 
 
+If we are successful, this will make a difference in the realm of object detection, where we will be able to provide more novel insight related to our challenges with our results and observations from our experiments trying to solve the landscape (variance/blending), size, and other flying objects challenges. In addition, this will positively affect the world of surveillance due to our focus on real-world conditions and use cases. Drones are capable of much danger and harm, and we can make the world a safer place. Surveillance technology needs to adapt quickly because drone use is increasing at an alarming rate.
+
 (5 points) What data did you use? Provide details about your data, specifically choose the most important aspects of your data mentioned \href{https://arxiv.org/abs/1803.09010}{here}. You don’t have to choose all of them, just the most relevant.
+
+Jackie: Didn't realize this section requires some extra reading (https://arxiv.org/pdf/1803.09010.pdf). Still reading and filling out this info based on the paper.
 %-------------------------------------------------------------------------
 %------------------------------------------------------------------------
 \section{Approach}
