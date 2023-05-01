@@ -63,6 +63,7 @@ The primary objective of this project is to provide a model that detects a wide 
 
 Currently, single-stage detectors are the de-facto architecture choice for fast inference speeds. This choice comes at the expense of exchanging the higher accuracy you would typically expect from a two-state detector for the speed of a single-stage detector. Real-time object detection remains challenging due to variances in object spatial sizes and aspect ratios, inference speed, and noise. This is especially true for our use case, as flying objects can change location, scale, rotation, and trajectory very quickly. This conveys the necessity for fast inference speed (which for the purpose of this project is between 30 - 60 fps on 1080p video feed). 
 
+We trained our model on a dataset comprised of 15,064 images of various flying objects with a 70% train, 20% validation, and 10% test split. Each image is labeled with the class number of the object and the coordinates of the edges of the associated bounding box. An image may have more than one object and class, sitting at an average of 1.6 objects per image. The median image ratio is 416x416, and the average image size is 0.17 mp, ranging from 0.03 mp to 24.00 mp. The images were preprocessed with auto-orientation, but there were no augmentations applied. The dataset suffers from a class imbalance: out of the 40 classes, the drone, bird, p-airplane, and c-helicopter classes are considered over represented, with the remaining classes considered as under represented (ie. the largest class is 6,252 instances of drones and minimum is 88 instances of XB70). Published by Roboflow, this dataset was generated in 2022, having been downloaded only 15 times. 
 
 
 (5 points) What did you try to do? What problem did you try to solve? Articulate your objectives using absolutely no jargon. 
@@ -73,7 +74,6 @@ Currently, single-stage detectors are the de-facto architecture choice for fast 
 
 (5 points) What data did you use? Provide details about your data, specifically choose the most important aspects of your data mentioned \href{https://arxiv.org/abs/1803.09010}{here}. You don’t have to choose all of them, just the most relevant.
 
-Jackie: Didn't realize this section requires some extra reading (https://arxiv.org/pdf/1803.09010.pdf). Still reading and filling out this info based on the paper.
 %-------------------------------------------------------------------------
 %------------------------------------------------------------------------
 \section{Approach}
