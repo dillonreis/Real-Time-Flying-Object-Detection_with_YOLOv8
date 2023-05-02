@@ -8,6 +8,7 @@
 \usepackage{amssymb}
 \usepackage[table,xcdraw]{xcolor}
 \usepackage{subfig}
+\usepackage{bbm}
 
 % Include other packages here, before hyperref.
 
@@ -130,10 +131,9 @@ V^t = \beta V^{t-1} + \nabla_{\theta}\mathcal{L}(\theta^{t-1})
 \end{equation}
 
 Where \ref{Generalized Loss} is the generalized loss function incorporating the individual loss weights as well as weight decay $\phi$, \ref{Velocity} is the velocity term which takes momentum $\beta$ as a parameter, and \ref{Weight Update} which is the weight update term. The specific YoloV8 loss function can be defined as:
-
 \begin{multline}
-\mathcal{L} = \dfrac{\lambda_{box}}{N_{pos}}\sum_{x,y}\mathbf{1}_{c^*_{x,y}}\big[1 - q_{x,y} + \dfrac{\Vert b_{x,y} - \hat{b_{x,y}} \Vert_2^2}{c^2} + \alpha_{x,y}\nu_{x,y}\big] \\  + \dfrac{\lambda_{cls}}{N_{pos}}\sum_{x,y}\sum_{c\in classes}y_clog(\hat{y_c}) + (1 - y_c)log(1 - \hat{y_c}) \\
-+ \dfrac{\lambda_{dfl}}{N_{pos}}\sum_{x,y}\mathbf{1}_{c^*_{x,y}}\Big[-(q_{(x,y)+1} - q_{x,y})log(\hat{q_{x,y}}) \\
+\mathcal{L} = \dfrac{\lambda_{box}}{N_{pos}}\sum_{x,y}\mathbbm{1}_{c^*_{x,y}}\big[1 - q_{x,y} + \dfrac{\Vert b_{x,y} - \hat{b_{x,y}} \Vert_2^2}{c^2} + \alpha_{x,y}\nu_{x,y}\big] \\  + \dfrac{\lambda_{cls}}{N_{pos}}\sum_{x,y}\sum_{c\in classes}y_clog(\hat{y_c}) + (1 - y_c)log(1 - \hat{y_c}) \\
++ \dfrac{\lambda_{dfl}}{N_{pos}}\sum_{x,y}\mathbbm{1}_{c^*_{x,y}}\Big[-(q_{(x,y)+1} - q_{x,y})log(\hat{q_{x,y}}) \\
 + (q_{x,y} - q_{(x,y)-1})log(q_{x,y})\Big]
 \end{multline}
 
@@ -157,13 +157,13 @@ q_{x,y} = IoU_{x,y} = \dfrac{\hat{\beta_{x,y}}\displaystyle \cap\beta_{x,y}}{\ha
 
 and 
 \begin{itemize}
-\item $N_{pos}$ is the total number of cells containing an object
-\item $\mathbf{1}_{c^*_{x,y}}$ is an indicator function for the cells containing an object. 
-\item $\beta_{x,y}$ is a tuple that represents the ground truth bounding box consisting of ($x_{coord}$,$y_{coord}$,width,height)
+\item $N_{pos}$ is the total number of cells containing an object.
+\item $\mathbbm{1}_{c^*_{x,y}}$ is an indicator function for the cells containing an object. 
+\item $\beta_{x,y}$ is a tuple that represents the ground truth bounding box consisting of ($x_{coord}$,$y_{coord}$,width,height).
 \item $\hat{\beta_{x,y}}$ is the predicted box for the respective cell.
 \item $b_{x,y}$ is a tuple that represents the central point of ground truth bounding box.
 \item $q_{(x,y)+/- 1}$ are the nearest predicted boxes IoUs (left and right) $\in c^*_{x,y}$
-\item $w_{x,y}$ and $h_{x,y}$ are the respective boxes width and height
+\item $w_{x,y}$ and $h_{x,y}$ are the respective boxes width and height.
 \end{itemize}
 
 Each cell determines its best candidate for predicting the bounding box of the object. This loss function includes the complete IoU  loss in the first term, the standard binary cross entropy for mulit-label classification (allowing each cell to predict more than 1 class), and the novel distribution focal loss in the 3rd term.
@@ -186,10 +186,10 @@ Each cell determines its best candidate for predicting the bounding box of the o
 \end{figure*}
 
 \begin{multline}
-\lambda_{coord}\sum_{i=0}^{S^2}\sum_{j=0}^{B}\mathbf{1}_{ij}^{obj}\Big[(x_i-\hat{x}_i)^2+(y_i-\hat{y}_i)^2\Big] \\ + \lambda_{coord}\sum_{i=0}^{S^2}\sum_{j=0}^{B}\mathds{1}_{ij}^{obj}\Big[(\sqrt{w_i}-\sqrt{\hat{w}_i})^2+(\sqrt{h_i}-\sqrt{\hat{h}_i})^2\Big]\\
-+\sum_{i=0}^{S^2}\sum_{j=0}^{B}\mathds{1}_{ij}^{obj}(C_i-\hat{C}i)^2\\
-+\lambda_{noobj}\sum_{i=0}^{S^2}\sum_{j=0}^{B}\mathds{1}_{ij}^{noobj}(C_i-\hat{C}i)^2\\
-+\sum_{i=0}^{S^2}\mathds{1}_{i}^{obj}\sum_{c\in classes}(p_i(c)-\hat{p}_i(c))^2
+\lambda_{coord}\sum_{i=0}^{S^2}\sum_{j=0}^{B}\mathbbm{1}_{ij}^{obj}\Big[(x_i-\hat{x}_i)^2+(y_i-\hat{y}_i)^2\Big] \\ + \lambda_{coord}\sum_{i=0}^{S^2}\sum_{j=0}^{B}\mathbbm{1}_{ij}^{obj}\Big[(\sqrt{w_i}-\sqrt{\hat{w}_i})^2+(\sqrt{h_i}-\sqrt{\hat{h}_i})^2\Big]\\
++\sum_{i=0}^{S^2}\sum_{j=0}^{B}\mathbbm{1}_{ij}^{obj}(C_i-\hat{C}i)^2\\
++\lambda_{noobj}\sum_{i=0}^{S^2}\sum_{j=0}^{B}\mathbbm{1}_{ij}^{noobj}(C_i-\hat{C}i)^2\\
++\sum_{i=0}^{S^2}\mathbbm{1}_{i}^{obj}\sum_{c\in classes}(p_i(c)-\hat{p}_i(c))^2
 \end{multline}
 
 
