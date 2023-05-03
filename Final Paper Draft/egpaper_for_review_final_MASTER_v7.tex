@@ -60,9 +60,9 @@ The primary objective of this project is to provide generalized real-time flying
 
 Real-time object detection remains challenging due to variances in object spatial sizes and aspect ratios, inference speed, and noise. This is especially true for our use case, as flying objects can change location, scale, rotation, and trajectory very quickly. This conveys the necessity for fast inference speed and thorough model evaluation between low-variance classes, object sizes, rotations, backgrounds, and aspect ratios.
 
-Our initial model is trained on a dataset \cite{InitialDataset} comprised of 15,064 images of various flying objects with an 80\% train and 20\% validation split. Each image is labeled with the class number of the object and the coordinates of the edges of the associated bounding box. An image may have more than one object and class, sitting at an average of 1.6 annotated objects per image and a total of 24,769 annotations across all images. The median image ratio is 416x416. The images were pre-processed with auto-orientation, but there were no augmentations applied. The dataset represents a long-tailed distribution with the drone (25.2\% of objects), bird (25\%), p-airplane (7.9\%), and c-helicopter (6.3\%) classes taking up the majority of the dataset, suffering from a class imbalance. Published by Roboflow, this dataset was generated in 2022, having been downloaded only 15 times.
+Our initial model is trained on a dataset \cite{InitialDataset} comprised of 15,064 images of various flying objects with an 80\% train and 20\% validation split. Each image is labeled with the class number of the object and the coordinates of the edges of the associated bounding box. An image may have more than one object and class, sitting at an average of 1.6 annotated objects per image and a total of 24,769 annotations across all images. The median image ratio is 416x416. The images were pre-processed with auto-orientation, but there were no augmentations applied. The dataset represents a long-tailed distribution with the drone (25.2\% of objects), bird (25\%), p-airplane (7.9\%), and c-helicopter (6.3\%) classes taking up the majority of the dataset (64.4\%), suffering from a class imbalance. Published on Roboflow with an unnamed author, this dataset was generated in 2022, having been downloaded only 15 times.
 
-In addition, we utilize a second data set \cite{TransferDataset} for transfer learning. [TODO]
+In addition, we utilized a second data set \cite{TransferDataset} to apply transfer learning. With a focus on the challenges we laid out, this second dataset is of flying objects at a noticeably farther distance than our initial dataset. It consists of 11,998 images, where the average image size is 0.33 mp with a median image ratio of 640x512. The images are separated into a 90\% train and 10\% validation split. An image may contain more than one object and class, however, it has an average of one object per image, reaching a total count of 12,410 annotated objects. With only four different objects, each class is well represented: drones take up 38.8\% of the annotated objects, 21.2\% helicopters, 20.4\% airplanes, and 19.6\% birds. Although Roboflow reports a bird class, the images that contain birds are not labeled and are not included as a class in the transfer model. This dataset was published on Roboflow in 2022 by Ahmed Mohsen, having only 5 downloads by the time of this paper.
 %-------------------------------------------------------------------------
 %------------------------------------------------------------------------
 \section{Approach}
@@ -178,7 +178,7 @@ YOLOv8 \ref{fig:YOLOv8_arch} uses CSPDarknet53 \cite{darkNet} as its backbone, a
 
 This figure \ref{fig:F14vsF18} shows the original F-14 and F-18 images and the activations of the four c2f stages in the network, with each stage being more profound in the network from the second image right. The Activation Map corresponding to the shallowest c2f module shows the broadest activation. This module detects the two wings of the aircraft and determines that this object is a plane. The second activation map corresponds to the second c2f module in our backbone. It shows strong activations at different components of the aircraft, such as locating the wings, body, cockpit, and weapons system onboard. This layer determines what kind of aircraft is being presented in the image by highlighting these features. The third activation map is now showing and is starting to dive into the individual textures of the components of the aircraft, presumably checking for minute differences in parts. Finally, the model's final c2f module activates extremely fine-grained details in the images. Both the F-14 and F-18 have an outline around the plane, leading the model to detect the overall shape of the aircraft. Similar feature activation maps generally mean the model will classify objects the same. The F-14 and F-18 images' features activate the same across multiple layers, explaining why the model is experiencing class confusion for these two classes.
 
-\subsection{Initial Model  -  [TODO] Pls help rename!!@@@@}
+\subsection{Initial Model Results}
 
 [TODO] ADD HYPOTHESES
 
@@ -195,7 +195,7 @@ Despite the visual similarities between the birds, drone, and p-airplane in thes
     \label{fig:Initial Model Performance}
 \end{figure}
 
-\subsection{Transfer Learning}
+\subsection{Transfer Learning Results}
 
 [TODO] ADD HYPOTHESES
 
