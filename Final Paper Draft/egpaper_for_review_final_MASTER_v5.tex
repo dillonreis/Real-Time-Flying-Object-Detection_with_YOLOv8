@@ -175,6 +175,38 @@ YOLOv8 \ref{fig:YOLOv8_arch} uses CSPDarknet53 as its backbone, a deep neural ne
 
 This figure \ref{fig:F14vsF18} shows the original F-14 and F-18 images and the activations of the four c2f stages in the network, with each stage being more profound in the network from the second image right. The Activation Map corresponding to the shallowest c2f module shows the broadest activation. This module detects the two wings of the aircraft and determines that this object is a plane. The second activation map corresponds to the second c2f module in our backbone. It shows strong activations at different components of the aircraft, such as locating the wings, body, cockpit, and weapons system onboard. This layer determines what kind of aircraft is being presented in the image by highlighting these features. The third activation map is now showing and is starting to dive into the individual textures of the components of the aircraft, presumably checking for minute differences in parts. Finally, the model's final c2f module activates extremely fine-grained details in the images. Both the F-14 and F-18 have an outline around the plane, leading the model to detect the overall shape of the aircraft. Similar feature activation maps generally mean the model will classify objects the same. The F-14 and F-18 images' features activate the same across multiple layers, explaining why the model is experiencing class confusion for these two classes.
 
+\subsection{Initial Model}
+
+To highlight our results, we addressed three challenging conditions: (1) detecting and classifying extremely small objects, (2) identifying flying objects that blend into their background, and (3) classifying multiple different types of flying objects. We examined the performance of our initial model, trained on [Dataset 1], against these challenges. This is demonstrated in Figure \ref{fig:Original Model Performance}, which features four images that represent the bird, drone, p-airplane, and V22 classes.
+
+The first of the four images showcases the model's ability to identify distant birds. In the second image, the model was put to the test against a very small drone that was also blended in with its background, resulting in a correct detection and classification of the drone. The third image shows the model's ability to identify a p-airplane, which is also blended into its surroundings. Finally, the fourth image exhibits the model's ability to identify an underrepresented aircraft with impressive accuracy, achieving a confidence score of 0.83.
+
+Despite the visual similarities between the birds, drone, and p-airplane in these images, our model successfully classified them with adequate confidence. These results illustrate our model's ability to overcome our identified challenges associated with object detection in real-world conditions, and also demonstrate our success in creating a solution that effectively tackles these challenges. Overall, it does very well at distinguishing various types of flying objects despite the need to account for multiple different classes of aircraft.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.5\textwidth]{figures/original_model.png}
+    \caption{Original Model Performance \cite{Yolov5Arch}}
+    \label{fig:Original Model Performance}
+\end{figure}
+
+\subsection{Transfer Learning}
+
+After applying transfer learning to [Dataset 2], the results indicate that our model is a solid foundation for transfer learning. This dataset was selected to focus on our challenge of detecting and classifying extremely small objects in appearance. As a reminder, bird images were not labeled, making it not possible to train our model to identify them as a class. Figure \ref{fig:Transfer Model Performance} displays our results, featuring four distinct images that represent the bird, drone, airplane, and helicopter objects.
+
+The first image displays a small, pixelated bird. Even with the lack of the bird class in our training process, our model correctly identified that the object was not any of the other available classes, even while allowing a very low confidence threshold of 0.20. The second image contains a drone that was nearly indistinguishable from the background clouds, yet our model was still able to classify it with a confidence score of 0.81. The third image includes a small airplane, which our model was still able to correctly identify and classify with a high confidence score of 0.85. In the final image, a barely visible helicopter was classified with a confidence score of 0.73.
+
+Even while presented with the challenges of size, camouflage, and varying flying objects, our model performed exceptionally well.
+
+Our model performed exceptionally well, even while presented wit the challenges of size, varying flying objects, and camouflaged objects that would be difficult for the human eye to identify. These results demonstrate that our model serves as an excellent base for transfer learning, particularly when dealing with small, pixelated objects, blended backgrounds, and distinguishing between drones and other flying objects.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.5\textwidth]{figures/transfer_model.png}
+    \caption{Transfer Model Performance \cite{Yolov5Arch}}
+    \label{fig:Transfer Model Performance}
+\end{figure}
+
 %-------------------------------------------------------------------------
 
 \section{Model Architecture}
