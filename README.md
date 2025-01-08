@@ -7,3 +7,5 @@ Real-Time Flying Object Detection with YOLOv8
 * Generalized (40 Class) and refined (3 Class) model.
 * Latex files containing the offical paper.
 * Example video of gneeralized model inference.
+
+* The source code for Ultralytics package can be found here --> https://github.com/ultralytics/ultralytics/tree/main
